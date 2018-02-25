@@ -179,4 +179,13 @@ public class InvoiceTest {
 		String printed = invoice.preparePrint();
 		Assert.assertThat(printed, Matchers.containsString("\nLiczba pozycji: 2"));
 	}
+
+	@Test
+	public void testAddingTheSameProductToInvoiceTwice() {
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.67")));
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.67")));
+		String printed = invoice.preparePrint();
+		Assert.assertThat(printed, Matchers.containsString("\nLiczba pozycji: 1"));
+		Assert.assertThat(printed, Matchers.containsString("Oscypek 2"));
+	}
 }

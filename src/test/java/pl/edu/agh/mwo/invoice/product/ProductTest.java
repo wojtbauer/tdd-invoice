@@ -54,4 +54,32 @@ public class ProductTest {
 	public void testProductWithNegativePrice() {
 		new TaxFreeProduct("Mandarynki", new BigDecimal("-1.00"));
 	}
+
+	@Test
+	public void testProductsWithTheSameNameAndPriceAreEqual() {
+		Product product1 = new DairyProduct("Kozi ser", new BigDecimal("10.56"));
+		Product product2 = new DairyProduct("Kozi ser", new BigDecimal("10.56"));
+		Assert.assertEquals(product1, product2);
+	}
+
+	@Test
+	public void testProductsWithTheSameNameAndPriceButDifferentTypeAreNotEqual() {
+		Product product1 = new OtherProduct("Kozi ser", new BigDecimal("10.56"));
+		Product product2 = new TaxFreeProduct("Kozi ser", new BigDecimal("10.56"));
+		Assert.assertNotEquals(product1, product2);
+	}
+
+	@Test
+	public void testProductsWithDifferentNameAreNotEqual() {
+		Product product1 = new DairyProduct("Kozi ser", new BigDecimal("10.56"));
+		Product product2 = new DairyProduct("Krowi ser", new BigDecimal("10.56"));
+		Assert.assertNotEquals(product1, product2);
+	}
+
+	@Test
+	public void testProductsWithDifferentPriceAreNotEqual() {
+		Product product1 = new DairyProduct("Kozi ser", new BigDecimal("10.56"));
+		Product product2 = new DairyProduct("Kozi ser", new BigDecimal("10.57"));
+		Assert.assertNotEquals(product1, product2);
+	}
 }
