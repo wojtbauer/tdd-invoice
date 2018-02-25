@@ -19,7 +19,11 @@ public class Invoice {
 		if (product == null || quantity <= 0) {
 			throw new IllegalArgumentException();
 		}
-		products.put(product, quantity);
+		if (products.containsKey(product)) {
+			products.put(product, products.get(product) + quantity);
+		} else {
+			products.put(product, quantity);
+		}
 	}
 
 	public BigDecimal getNetTotal() {
@@ -46,5 +50,39 @@ public class Invoice {
 
 	public int getNumber() {
 		return number;
+	}
+
+	public String preparePrint() {
+//        String printed = String.valueOf(number);
+
+		// solution 1 - with foreach loop
+//		for (Product product: products.keySet()) {
+//			printed += "\n";
+//			printed += product.getName();
+//			printed += " " + products.get(product);
+//			printed += " " + product.getPrice();
+//		}
+
+		// solution 2 - with stream and concatenation
+//        printed += products.keySet().stream()
+//                .map(product -> "\n" + product.getName() + " " + products.get(product) + " " + product.getPrice())
+//                .collect(Collectors.toList());
+
+		// solution 3 - with stream and String.format
+//        printed += products.keySet().stream()
+//                .map(product -> String.format("\n%s %d %s", product.getName(), products.get(product), product.getPrice()))
+//                .collect(Collectors.toList());
+
+//        printed += "\nLiczba pozycji: " + products.size();
+
+
+		// and always remember - it's better to use StringBuilder!
+		// so here you go, solution 4 with streams, string format and StringBuilder (PRO)
+		StringBuilder sb = new StringBuilder(String.valueOf(this.number));
+		products.keySet().stream()
+				.map(product -> String.format("\n%s %d %s", product.getName(), products.get(product), product.getPrice()))
+				.forEach(sb::append);
+		sb.append("\nLiczba pozycji: ").append(products.size());
+		return sb.toString();
 	}
 }

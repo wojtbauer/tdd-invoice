@@ -129,4 +129,54 @@ public class InvoiceTest {
 		int number2 = new Invoice().getNumber();
 		Assert.assertThat(number1, Matchers.lessThan(number2));
 	}
+
+	@Test
+	public void testPrintedInvoiceContainsNumber() {
+		String printed = invoice.preparePrint();
+		String number = String.valueOf(invoice.getNumber());
+		Assert.assertThat(printed, Matchers.containsString(number));
+	}
+
+	@Test
+	public void testPrintedInvoiceContainsProductName() {
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.50")));
+		String printed = invoice.preparePrint();
+		Assert.assertThat(printed, Matchers.containsString("Oscypek"));
+	}
+
+	@Test
+	public void testPrintedInvoiceContainsProductNameInNewLine() {
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.50")));
+		String printed = invoice.preparePrint();
+		Assert.assertThat(printed, Matchers.containsString("\nOscypek"));
+	}
+
+	@Test
+	public void testPrintedInvoiceContainsProductQuantity() {
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.50")), 387);
+		String printed = invoice.preparePrint();
+		Assert.assertThat(printed, Matchers.containsString("387"));
+	}
+
+	@Test
+	public void testPrintedInvoiceContainsProductPrice() {
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.67")));
+		String printed = invoice.preparePrint();
+		Assert.assertThat(printed, Matchers.containsString("2.67"));
+	}
+
+	@Test
+	public void testPrintedInvoiceContainsFooterWithOneProduct() {
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.67")));
+		String printed = invoice.preparePrint();
+		Assert.assertThat(printed, Matchers.containsString("\nLiczba pozycji: 1"));
+	}
+
+	@Test
+	public void testPrintedInvoiceContainsFooterWithTwoProducts() {
+		invoice.addProduct(new OtherProduct("Oscypek", new BigDecimal("2.67")));
+		invoice.addProduct(new DairyProduct("Jogurt", new BigDecimal("3.33")));
+		String printed = invoice.preparePrint();
+		Assert.assertThat(printed, Matchers.containsString("\nLiczba pozycji: 2"));
+	}
 }
