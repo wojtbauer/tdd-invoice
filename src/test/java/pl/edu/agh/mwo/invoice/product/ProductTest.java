@@ -82,4 +82,32 @@ public class ProductTest {
 		Product product2 = new DairyProduct("Kozi ser", new BigDecimal("10.57"));
 		Assert.assertNotEquals(product1, product2);
 	}
+
+	@Test
+	public void testBottleOfWineExcise() {
+		BigDecimal expectedExcise = new BigDecimal("5.56");
+		HasExcise wine = new BottleOfWine("Czerwone", new BigDecimal("20.99"));
+		Assert.assertThat(expectedExcise, Matchers.comparesEqualTo(wine.getExcise()));
+	}
+
+	@Test
+	public void testBottleOfWinePriceWithTax() {
+		BigDecimal expectedPrice = new BigDecimal("128.56"); // 100 * 1.23 + 5.56
+		Product wine = new BottleOfWine("Czerwone", new BigDecimal("100"));
+		Assert.assertThat(expectedPrice, Matchers.comparesEqualTo(wine.getPriceWithTax()));
+	}
+
+	@Test
+	public void testFuelCanisterExcise() {
+		BigDecimal expectedExcise = new BigDecimal("5.56");
+		HasExcise wine = new FuelCanister("PB/98", new BigDecimal("4.67"));
+		Assert.assertThat(expectedExcise, Matchers.comparesEqualTo(wine.getExcise()));
+	}
+
+	@Test
+	public void testFuelCanisterWinePriceWithTax() {
+		BigDecimal expectedPrice = new BigDecimal("105.56"); // 100 * 1.00 + 5.56
+		Product wine = new FuelCanister("ON", new BigDecimal("100"));
+		Assert.assertThat(expectedPrice, Matchers.comparesEqualTo(wine.getPriceWithTax()));
+	}
 }
