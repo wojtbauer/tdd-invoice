@@ -1,15 +1,26 @@
 package pl.edu.agh.mwo.invoice;
 
+import pl.edu.agh.mwo.invoice.product.Product;
+import pl.gov.sc.CustomsServiceVerificator;
+import pl.gov.sc.Imported;
+
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-
-import pl.edu.agh.mwo.invoice.product.Product;
 
 public class Invoice {
 	private Map<Product, Integer> products = new HashMap<>();
 	private static int nextNumber = 0;
 	private final int number = ++nextNumber;
+	private final CustomsServiceVerificator customsVerificator;
+
+	public Invoice() {
+		this(null);
+	}
+
+	public Invoice(CustomsServiceVerificator customsVerificator) {
+		this.customsVerificator = customsVerificator;
+	}
 
 	public void addProduct(Product product) {
 		addProduct(product, 1);
@@ -22,7 +33,16 @@ public class Invoice {
 		if (products.containsKey(product)) {
 			products.put(product, products.get(product) + quantity);
 		} else {
+			this.ensureProductMeetsAdditionalCriteria(product);
 			products.put(product, quantity);
+		}
+	}
+
+	private void ensureProductMeetsAdditionalCriteria(Product product) {
+		if (this.customsVerificator != null && product instanceof Imported) {
+			if (!this.customsVerificator.verify((Imported) product)) {
+				throw new IllegalArgumentException("SC prevented from adding this product to the invoice!");
+			}
 		}
 	}
 
